@@ -25,3 +25,9 @@ export const getUserById = async (id: string) => {
     return null;
   }
 };
+
+
+export const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+})
