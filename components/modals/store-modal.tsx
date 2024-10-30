@@ -60,11 +60,11 @@ export const StoreModal = () => {
   return (
     <Dialog
       open={storeModal.isOpen}
-      // onOpenChange={(open) => {
-      //   if (!open) {
-      //     storeModal.onClose();
-      //   }
-      // }}
+      onOpenChange={(open) => {
+        if (!open) {
+          storeModal.onClose();
+        }
+      }}
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
