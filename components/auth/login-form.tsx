@@ -35,22 +35,13 @@ export const LoginForm = () => {
       await signIn("credentials", {
         email: values.email,
         password: values.password,
+        callbackUrl: "/"
       }).then(() => {
         toast.success("Logged in successfully");
       }).catch(() => {
         form.reset();
         toast.error("error");
       });
-      //   .then((data) => {
-      //     if (data?.error) {
-      //       form.reset();
-      //       toast.error(data?.error);
-      //     }
-      //   })
-      //   .catch(() => {
-      //     form.reset();
-      //     toast.error("error");
-      //   });
     });
   };
 

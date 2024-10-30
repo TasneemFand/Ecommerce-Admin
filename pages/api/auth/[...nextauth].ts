@@ -42,12 +42,14 @@ export const authOptions: AuthOptions = {
       }
     })
   ],
-  pages: {
-    signIn: "/sign-in",
-  },
+  // pages: {
+  //   signIn: "/",
+  // },
   session: {
     strategy: "jwt",
   },
+  secret: process.env.NEXTAUTH_SECRET,
+
 }
 
 export default NextAuth(authOptions);
