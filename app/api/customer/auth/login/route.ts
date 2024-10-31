@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
   try {
@@ -17,26 +18,32 @@ export async function POST(req: Request) {
     }
 
     try {
-      // Check password (adjust if passwords are hashed)
-      const passwordMatch = await bcrypt.compare(
+      // Verify the password
+      const isPasswordValid = await bcrypt.compare(
         password,
         existingUser.password
       );
-      if (!passwordMatch) {
+      if (!isPasswordValid) {
         return NextResponse.json(
-          { error: "Invalid credentials!" },
+          { error: "Invalid credentials" },
           { status: 401 }
         );
       }
 
-      // If sign-in is successful, return success message
-      return NextResponse.json(
-        { success: "Successfully logged in!" },
+      // Create a JWT token for the user
+      const token = await jwt.sign(
+        { id: existingUser.id, email: existingUser.email },
+        process.env.NEXTAUTH_SECRET!,
+        { expiresIn: "1d" } // Set an expiration time as needed
+      );
+      // Set HttpOnly cookie with the token
+      const response = NextResponse.json(
+        { token, user: existingUser },
         { status: 200 }
       );
+      return response;
     } catch (error) {
       // Handle unexpected sign-in errors
-      console.error("Sign-in Error:", error);
       return NextResponse.json(
         { error: "Something went wrong during sign-in!" },
         { status: 500 }
