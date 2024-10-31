@@ -8,6 +8,7 @@ import { UserButton } from "./user-button";
 
 export default async function Navbar() {
   const currentUser = await getCurrentUser();
+
   if (!currentUser) {
     redirect("/sign-in");
   }
