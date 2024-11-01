@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
@@ -21,12 +22,15 @@ export async function POST(req: Request) {
         }
       );
     }
+    const cookiesData = await cookies(); // Ensure that cookies() is awaited if needed in your environment
+    const currentStore = cookiesData.get("currentStore");
 
     const user = await db.customer.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        storeId: currentStore?.id ?? "13787ec5-d05d-4f50-99f0-d8ceb68185e4",
       },
     });
 

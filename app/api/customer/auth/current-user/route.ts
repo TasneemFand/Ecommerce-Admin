@@ -28,7 +28,7 @@ export async function GET(req) {
     // Find the customer
     const customer = await db.customer.findUnique({
       where: { id: decoded.id },
-      select: { id: true, email: true, name: true },
+      select: { id: true, email: true, name: true, store: true },
     });
 
     if (!customer) {

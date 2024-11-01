@@ -1,31 +1,31 @@
 // prisma/schema.prisma
 datasource db {
-  provider  = "mongodb"
-  url  	    = env("MONGO_URI")
+  provider = "mongodb"
+  url      = env("MONGO_URI")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-
 model User {
-  id            String    @id @default(cuid()) @map("_id")
-  name          String
-  email         String   @unique
-  password      String
-  stores        Store[]  @relation("UserStores")
+  id       String  @id @default(cuid()) @map("_id")
+  name     String
+  email    String  @unique
+  password String
+  stores   Store[] @relation("UserStores")
 }
 
 model Store {
-  id         String      @id @default(uuid()) @map("_id")
-  name       String
-  userId     String
-  user       User       @relation("UserStores", fields: [userId], references: [id])
-  products   Product[]   @relation("StoreToProduct")
-  orders     Order[]     @relation("StoreToOrder")
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id        String     @id @default(uuid()) @map("_id")
+  name      String
+  userId    String
+  user      User       @relation("UserStores", fields: [userId], references: [id])
+  products  Product[]  @relation("StoreToProduct")
+  orders    Order[]    @relation("StoreToOrder")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Customers Customer[] @relation("CustomerStores")
 
   @@index([userId])
 }
@@ -62,8 +62,8 @@ model Order {
   storeId    String
   store      Store       @relation("StoreToOrder", fields: [storeId], references: [id])
   orderItems OrderItem[]
-  customerId  String?
-  customer    Customer?   @relation("CustomerOrders", fields: [customerId], references: [id])
+  customerId String?
+  customer   Customer?   @relation("CustomerOrders", fields: [customerId], references: [id])
   isPaid     Boolean     @default(false)
   phone      String      @default("")
   address    String      @default("")
@@ -86,11 +86,15 @@ model OrderItem {
 }
 
 model Customer {
-  id         String    @id @default(cuid()) @map("_id")
-  name       String
-  email      String    @unique
-  password   String
-  orders     Order[]   @relation("CustomerOrders")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id        String   @id @default(cuid()) @map("_id")
+  name      String
+  email     String   @unique
+  password  String
+  orders    Order[]  @relation("CustomerOrders")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  storeId   String
+  store     Store    @relation("CustomerStores", fields: [storeId], references: [id])
+
+  @@index([storeId])
 }
