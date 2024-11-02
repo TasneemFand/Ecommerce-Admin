@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
         name,
         email,
         password: hashedPassword,
-        storeId: currentStore?.id ?? "13787ec5-d05d-4f50-99f0-d8ceb68185e4",
+        storeId: (currentStore as any)?.id ?? "deb85229-40e2-4ee2-9817-c5b021d3a7bc",
       },
     });
 

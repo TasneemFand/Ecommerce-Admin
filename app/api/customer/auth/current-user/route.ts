@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // admin-app/app/api/customer/getCustomer/route.js
 import jwt from "jsonwebtoken";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(req) {
+export async function GET(req: any) {
   try {
     const token = req.nextUrl.searchParams.get("authToken");
     const cookiesData = await cookies(); // Ensure that cookies() is awaited if needed in your environment
@@ -27,7 +28,7 @@ export async function GET(req) {
     const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!);
     // Find the customer
     const customer = await db.customer.findUnique({
-      where: { id: decoded.id },
+      where: { id: (decoded as any).id },
       select: { id: true, email: true, name: true, store: true },
     });
 

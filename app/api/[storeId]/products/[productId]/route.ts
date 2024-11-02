@@ -4,16 +4,17 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
+  const productId = (await params).productId
   try {
-    if (!params.productId) {
+    if (!productId) {
       return new NextResponse("Missing productId", { status: 400 });
     }
 
     const product = await db.product.findUnique({
       where: {
-        id: params.productId,
+        id: productId,
       },
       include: {
         images: true,
@@ -35,8 +36,11 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { storeId: string; productId: string } }
+  { params }: { params: Promise<{ productId: string, storeId: string }> }
 ) {
+  const storeId = (await params).storeId;
+  const productId = (await params).productId;
+
   try {
     const currentUser = await getCurrentUser();
     const body = await req.json();
@@ -64,13 +68,13 @@ export async function PATCH(
       return new NextResponse("Missing images", { status: 400 });
     }
 
-    if (!params.productId) {
+    if (!productId) {
       return new NextResponse("Missing productId", { status: 400 });
     }
 
     const storeByUserId = await db.store.findFirst({
       where: {
-        id: params.storeId,
+        id: storeId,
         userId: currentUser.id,
       },
     });
@@ -81,7 +85,7 @@ export async function PATCH(
 
     await db.product.update({
       where: {
-        id: params.productId,
+        id: productId,
       },
       data: {
         name,
@@ -96,7 +100,7 @@ export async function PATCH(
 
     const product = await db.product.update({
       where: {
-        id: params.productId,
+        id: productId,
       },
       data: {
         images: {
@@ -122,8 +126,11 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { storeId: string; productId: string } }
+  { params }: { params: Promise<{ productId: string, storeId: string }> }
 ) {
+  const productId = (await params).productId;
+  const storeId = (await params).storeId;
+
   try {
     const currentUser = await getCurrentUser();
 
@@ -131,13 +138,13 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.productId) {
+    if (!productId) {
       return new NextResponse("Missing productId", { status: 400 });
     }
 
     const storeByUserId = await db.store.findFirst({
       where: {
-        id: params.storeId,
+        id: storeId,
         userId: currentUser.id,
       },
     });
@@ -148,7 +155,7 @@ export async function DELETE(
 
     const product = await db.product.deleteMany({
       where: {
-        id: params.productId,
+        id: productId,
       },
     });
 

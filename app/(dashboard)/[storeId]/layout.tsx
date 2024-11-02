@@ -9,8 +9,9 @@ export default async function DashboardLayout({
   params,
 }: {
   children: ReactNode;
-  params: { storeId: string };
+  params: Promise<{ storeId: string }>
 }) {
+  const storeId = (await params).storeId
   const currentUser = await getCurrentUser();
   if (!currentUser) {
     redirect("/sign-in");
@@ -18,7 +19,7 @@ export default async function DashboardLayout({
 
   const store = await db.store.findFirst({
     where: {
-      id: params.storeId,
+      id: storeId,
       userId: currentUser.id,
     },
   });

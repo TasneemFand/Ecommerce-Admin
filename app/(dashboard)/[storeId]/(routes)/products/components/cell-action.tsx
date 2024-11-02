@@ -35,7 +35,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setIsLoading(true)
 
-      await axios.delete(`/api/${params.storeId}/products/${data.id}`)
+      await axios.delete(`/api/${params?.storeId}/products/${data.id}`)
       router.refresh()
       router.push(`/${params?.storeId}/products`)
       toast.success('Product deleted.')
@@ -72,7 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/${params.storeId}/products/${data.id}`)
+              router.push(`/${params?.storeId}/products/${data.id}`)
             }
           >
             <Edit className="w-4 h-4 mr-2" /> Update

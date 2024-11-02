@@ -7,7 +7,7 @@ import { useParams, usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
 
-export function MainNav({ className, ...props }: HTMLAttributes<HTMLElement>) {
+export function MainNav({ className }: HTMLAttributes<HTMLElement>) {
   const pathName = usePathname()
   const params = useParams()
 

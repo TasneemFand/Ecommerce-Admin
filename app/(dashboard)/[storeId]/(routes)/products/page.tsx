@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { format } from 'date-fns'
 import { formatter } from '@/lib/utils'
 
@@ -8,20 +9,19 @@ import { db } from '@/lib/db'
 const ProductsPage = async ({
   params,
 }: {
-  params: {
-    storeId: string
-  }
+  params: Promise<{ storeId: string }>
 }) => {
+  const storeId = (await params).storeId
   const products = await db.product.findMany({
     where: {
-      storeId: params.storeId,
+      storeId: storeId,
     },
     orderBy: {
       createdAt: 'desc',
     },
   })
 
-  const formattedProducts: ProductColumn[] = products.map((product) => ({
+  const formattedProducts: ProductColumn[] = products.map((product: any) => ({
     id: product.id,
     name: product.name,
     isFeatured: product.isFeatured,

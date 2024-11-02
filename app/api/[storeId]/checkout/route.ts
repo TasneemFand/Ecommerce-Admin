@@ -6,11 +6,10 @@ export async function POST(
   {
     params,
   }: {
-    params: {
-      storeId: string;
-    };
+    params: Promise<{ storeId: string }>;
   }
 ) {
+  const storeId = (await params).storeId;
   const { productIds } = await req.json();
 
   if (!productIds) {
@@ -19,18 +18,11 @@ export async function POST(
     });
   }
 
-  const products = await db.product.findMany({
-    where: {
-      id: {
-        in: productIds,
-      },
-    },
-  });
 
-  const order = await db.order.create({
+  await db.order.create({
     data: {
-      storeId: params.storeId,
-      isPaid: false,
+      storeId: storeId,
+      isPaid: true,
       orderItems: {
         create: productIds.map((productId: string) => ({
           product: {
@@ -40,6 +32,15 @@ export async function POST(
           },
         })),
       },
+    },
+  });
+
+  await db.product.updateMany({
+    where: {
+      id: { in: productIds },
+    },
+    data: {
+      isArchived: true,
     },
   });
 
